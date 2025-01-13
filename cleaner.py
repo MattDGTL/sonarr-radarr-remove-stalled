@@ -46,6 +46,7 @@ async def make_api_request(url, api_key, params=None):
 async def make_api_delete(url, api_key, json_body=None, params=None):
     try:
         headers = {'X-Api-Key': api_key}
+        logging.info(f'Request Body: {json_body}')
         async with aiohttp.ClientSession() as session:
             async with session.delete(url, headers=headers, json=json_body, params=params) as response:
                 response.raise_for_status()
@@ -99,6 +100,7 @@ async def remove_stalled_sonarr_downloads():
                     ids_to_delete.append(item["id"])
 
         # If there are IDs to delete, make the bulk delete request
+        logging.info(f'Sonarr IDs to Delete: {ids_to_delete}')
         if ids_to_delete:
             bulk_delete_url = f'{SONARR_API_URL}/queue/bulk'
             await make_api_delete(
